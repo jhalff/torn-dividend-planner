@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         TORN Dividend Planner
 // @namespace    https://github.com/jhalff/torn-dividend-planner
-// @version      1.0.25
+// @version      1.0.26
 // @description  Build and manage TORN stock dividend combinations
 // @author       Draxeth
 // @match        https://www.torn.com/page.php*
@@ -1004,24 +1004,56 @@
 
         list.innerHTML = '';
 
-        stockNames.forEach((element, index) => {
-            const parent = element.closest('ul');
+        stockNames.forEach((nameElement, index) => {
+            const stock = nameElement.closest('ul');
+
+            const priceTab = stock?.querySelector(
+                '[data-name="priceTab"]'
+            );
+
+            const ownedTab = stock?.querySelector(
+                '[data-name="ownedTab"]'
+            );
+
+            const dividendTab = stock?.querySelector(
+                '[data-name="dividendTab"]'
+            );
+
+            const acronym =
+                nameElement.dataset.acronym ||
+                nameElement.querySelector('[data-acronym]')
+                    ?.dataset.acronym;
 
             const item = document.createElement('div');
 
             item.style.padding = '8px 12px';
             item.style.borderBottom = '1px solid #333';
             item.style.fontSize = '11px';
+            item.style.lineHeight = '1.5';
 
             item.innerHTML = `
             <strong>${index + 1}.</strong>
-            ID: ${element.id || 'none'}
-            |
-            Acronym: ${element.dataset.acronym || 'none'}
+            ${acronym || 'NO ACRONYM'}
             <br>
-            Parent ID: ${parent?.id || 'none'}
+
+            Name: ${nameElement.textContent.trim()}
+            <br>
+
+            Price: ${priceTab ? 'YES' : 'NO'}
             |
-            Parent class: ${parent?.className || 'none'}
+            Owned: ${ownedTab ? 'YES' : 'NO'}
+            |
+            Dividend: ${dividendTab ? 'YES' : 'NO'}
+
+            <br>
+
+            Price text:
+            ${priceTab?.textContent.trim() || 'NONE'}
+
+            <br>
+
+            Owned text:
+            ${ownedTab?.textContent.trim() || 'NONE'}
         `;
 
             list.appendChild(item);
