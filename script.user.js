@@ -93,21 +93,25 @@
             '[data-testid*="name" i]',
             '[data-acronym]'
         ]);
+
         const priceElement = findElement(stock, [
             '[data-name="priceTab"] .price___WsxqW',
             '[data-name="priceTab"] [class*="price"]',
             '[data-testid*="price" i]'
         ]);
+
         const ownedValueElement = findElement(stock, [
             '[data-name="ownedTab"] .value___MBU9w',
             '[data-name="ownedTab"] [class*="value"]',
             '[data-testid*="owned-value" i]'
         ]);
+
         const ownedSharesElement = findElement(stock, [
             '[data-name="ownedTab"] .count___yJoKq',
             '[data-name="ownedTab"] [class*="count"]',
             '[data-testid*="owned-shares" i]'
         ]);
+
         const benefitElement = findElement(stock, [
             '[data-name="dividendTab"] .dividend___X_zwW',
             '[data-name="dividendTab"] [class*="dividend"]',
@@ -120,6 +124,7 @@
 
         const acronym = nameElement.dataset.acronym
             || nameElement.querySelector('[data-acronym]')?.dataset.acronym;
+
         if (!acronym) {
             return null;
         }
@@ -129,12 +134,31 @@
             .trim();
 
         const price = parseNumber(priceElement.textContent);
-        const ownedValue = parseNumber(ownedValueElement?.textContent);
-        const ownedShares = parseNumber(ownedSharesElement?.textContent);
 
-        const benefit = benefitElement?.textContent.trim() || 'Unknown benefit';
+        const ownedShares = parseNumber(
+            ownedSharesElement?.textContent
+        );
+
+        let ownedValue = parseNumber(
+            ownedValueElement?.textContent
+        );
+
+        /*
+         * TORN may not have rendered the owned value element yet.
+         * If we have the share count, calculate the value ourselves.
+         */
+        if (ownedValue === 0 && ownedShares > 0 && price > 0) {
+            ownedValue = price * ownedShares;
+        }
+
+        const benefit = benefitElement?.textContent.trim()
+            || 'Unknown benefit';
+
         const benefitShares = BENEFIT_SHARES[acronym];
-        const dividendCost = benefitShares ? price * benefitShares : null;
+
+        const dividendCost = benefitShares
+            ? price * benefitShares
+            : null;
 
         return {
             element: stock,
