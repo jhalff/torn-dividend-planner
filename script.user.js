@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         TORN Dividend Planner
 // @namespace    https://github.com/jhalff/torn-dividend-planner
-// @version      1.1.0
+// @version      1.1.1
 // @description  Build and manage TORN stock dividend combinations
 // @author       Draxeth
 // @match        https://www.torn.com/page.php*
@@ -18,6 +18,7 @@
 
     const STOCK_SELECTOR = '[data-name="nameTab"]';
     const CONTAINER_SELECTOR = '[class*="stockMarket___"], [data-testid*="stock-market" i]';
+    const IS_MOBILE = window.matchMedia('(max-width: 800px)').matches;
 
     if (new URL(window.location.href).searchParams.get('sid') !== 'stocks') {
         return;
@@ -245,6 +246,7 @@
     function createManager() {
         const newManager = document.createElement('div');
         newManager.id = 'torn-dividend-manager';
+        newManager.classList.add('is-collapsed');
 
         newManager.innerHTML = `
             <div class="tsm-header">
@@ -259,22 +261,19 @@
                     aria-label="Collapse stock manager"
                     aria-expanded="true"
                 >
-                    ▲
+                    ▼
                 </button>
             </div>
 
             <div class="tsm-content">
                 <div class="tsm-portfolio">
-                    <div class="tsm-portfolio-title">
-                        Current portfolio value
-                    </div>
-
                     <div class="tsm-portfolio-value">
-                        $0
+                        Total:
+                        <strong>$0</strong>
                     </div>
 
                     <div class="tsm-portfolio-remaining">
-                        Available
+                        Available:
                         <strong>$0</strong>
                     </div>
                 </div>
@@ -325,7 +324,7 @@
     }
 
     function renderPortfolio(portfolioValue) {
-        const valueElement = manager.querySelector('.tsm-portfolio-value');
+        const valueElement = manager.querySelector('.tsm-portfolio-value strong');
         const remainingElement = manager.querySelector('.tsm-portfolio-remaining strong');
 
         const selectedCost = getSelectedCost();
@@ -388,7 +387,9 @@
                 </span>
             `;
 
-            item.title = 'Click to remove from combination';
+            if (IS_MOBILE) {
+                item.title = 'Click to remove from combination';
+            }
 
             item.addEventListener('click', () => {
                 removeStock(stock);
@@ -470,10 +471,6 @@
                         <span class="tsm-company">
                             ${stock.name}
                         </span>
-
-                        <span class="tsm-benefit">
-                            ${stock.benefit}
-                        </span>
                     </span>
 
                     <span class="tsm-details">
@@ -488,7 +485,9 @@
                 `;
 
                 if (affordable) {
-                    item.title = 'Click to add to combination';
+                    if (IS_MOBILE) {
+                        item.title = 'Click to add to combination';
+                    }
 
                     item.addEventListener('click', () => {
                         selectStock(stock);
@@ -612,18 +611,14 @@
                 padding: 9px 12px;
             }
 
-            #torn-dividend-manager .tsm-portfolio-title {
-                color: #aaa;
-                font-size: 12px;
-                font-weight: bold;
-                text-transform: uppercase;
+            #torn-dividend-manager .tsm-portfolio-value {
+                color: #777;
+                font-size: 11px;
+                font-variant-numeric: tabular-nums;
             }
 
-            #torn-dividend-manager .tsm-portfolio-value {
-                color: #fff;
-                font-size: 12px;
-                font-weight: bold;
-                font-variant-numeric: tabular-nums;
+            #torn-dividend-manager .tsm-portfolio-value strong {
+                color: #aaa;
             }
 
             #torn-dividend-manager .tsm-portfolio-remaining {
@@ -834,14 +829,6 @@
 
             #torn-dividend-manager .tsm-company {
                 color: #ccc;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-            }
-
-            #torn-dividend-manager .tsm-benefit {
-                color: #8f8f8f;
-                font-size: 11px;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
