@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         TORN Dividend Planner
 // @namespace    https://github.com/jhalff/torn-dividend-planner
-// @version      1.0.14
+// @version      1.0.15
 // @description  Build and manage TORN stock dividend combinations
 // @author       Draxeth
 // @match        https://www.torn.com/page.php*
@@ -240,7 +240,7 @@
                 </button>
             </div>
 
-            <div class="tsm-debug">no msg...</div>
+            <div class="tsm-debug">DEBUG: MANAGER HTML CREATED</div>
 
             <div class="tsm-content">
                 <div class="tsm-portfolio">
@@ -981,6 +981,12 @@
     }
 
     function waitForStocks() {
+        const debug = manager?.querySelector('.tsm-debug');
+
+        if (debug) {
+            debug.textContent = `WAITING | STOCKS: ${document.querySelectorAll(STOCK_SELECTOR).length}`;
+        }
+
         const stocks = document.querySelectorAll(STOCK_SELECTOR);
 
         if (!stocks.length) {
