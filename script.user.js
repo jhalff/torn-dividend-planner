@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         TORN Dividend Planner
 // @namespace    https://github.com/jhalff/torn-dividend-planner
-// @version      1.0.19
+// @version      1.0.20
 // @description  Build and manage TORN stock dividend combinations
 // @author       Draxeth
 // @match        https://www.torn.com/page.php*
