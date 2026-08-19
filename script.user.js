@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         TORN Dividend Planner
 // @namespace    https://github.com/jhalff/torn-dividend-planner
-// @version      1.0.24
+// @version      1.0.25
 // @description  Build and manage TORN stock dividend combinations
 // @author       Draxeth
 // @match        https://www.torn.com/page.php*
@@ -985,6 +985,49 @@
         document.head.appendChild(style);
     }
 
+    function renderStockDebug() {
+        if (!manager) {
+            return;
+        }
+
+        const list = manager.querySelector('.tsm-list');
+
+        if (!list) {
+            return;
+        }
+
+        const stockNames = [
+            ...document.querySelectorAll(
+                '[data-name="nameTab"]'
+            )
+        ];
+
+        list.innerHTML = '';
+
+        stockNames.forEach((element, index) => {
+            const parent = element.closest('ul');
+
+            const item = document.createElement('div');
+
+            item.style.padding = '8px 12px';
+            item.style.borderBottom = '1px solid #333';
+            item.style.fontSize = '11px';
+
+            item.innerHTML = `
+            <strong>${index + 1}.</strong>
+            ID: ${element.id || 'none'}
+            |
+            Acronym: ${element.dataset.acronym || 'none'}
+            <br>
+            Parent ID: ${parent?.id || 'none'}
+            |
+            Parent class: ${parent?.className || 'none'}
+        `;
+
+            list.appendChild(item);
+        });
+    }
+
     function waitForStocks() {
         const stockNames = document.querySelectorAll(
             '[data-name="nameTab"]'
@@ -1009,7 +1052,8 @@
             }
         }
 
-        sortAndRender();
+        // sortAndRender();
+        renderStockDebug();
 
         setTimeout(waitForStocks, 1000);
     }
