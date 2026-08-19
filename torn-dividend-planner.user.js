@@ -1,10 +1,13 @@
 // ==UserScript==
 // @name         TORN Dividend Planner
-// @namespace    http://tampermonkey.net/
+// @namespace    https://github.com/jhalff/torn-dividend-planner
 // @version      1.0.0
-// @description  Manage TORN stocks and build dividend combinations
+// @description  Build and manage TORN stock dividend combinations
 // @author       Draxeth
 // @match        https://www.torn.com/page.php?sid=stocks
+// @updateURL    https://raw.githubusercontent.com/jhalff/torn-dividend-planner/torn-dividend-planner.user.js
+// @downloadURL  https://raw.githubusercontent.com/jhalff/torn-dividend-planner/torn-dividend-planner.user.js
+// @supportURL   https://github.com/jhalff/torn-dividend-planner/issues
 // @grant        none
 // ==/UserScript==
 
