@@ -904,8 +904,20 @@
         document.head.appendChild(style);
     }
 
+    let diagnosticShown = false;
+
     function waitForStocks() {
         const stocks = document.querySelectorAll(STOCK_SELECTOR);
+
+        if (!diagnosticShown) {
+            diagnosticShown = true;
+
+            alert(
+                `[TORN Dividend Planner]\n\n` +
+                `Stocks found: ${stocks.length}\n` +
+                `URL: ${window.location.href}`
+            );
+        }
 
         if (!stocks.length) {
             requestAnimationFrame(waitForStocks);
