@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         TORN Dividend Planner
 // @namespace    https://github.com/jhalff/torn-dividend-planner
-// @version      1.1.2
+// @version      1.1.3
 // @description  Build and manage TORN stock dividend combinations
 // @author       Draxeth
 // @match        https://www.torn.com/page.php*
@@ -24,42 +24,251 @@
         return;
     }
 
-    const BENEFIT_SHARES = {
-        ASS: 1_000_000,
-        BAG: 3_000_000,
-        CNC: 7_500_000,
-        EWM: 1_000_000,
-        ELT: 5_000_000,
-        EVL: 100_000,
-        FHG: 2_000_000,
-        GRN: 500_000,
-        CBD: 350_000,
-        HRG: 10_000_000,
-        IIL: 1_000_000,
-        IOU: 3_000_000,
-        IST: 100_000,
-        LAG: 750_000,
-        LOS: 7_500_000,
-        LSC: 500_000,
-        MCS: 350_000,
-        MSG: 300_000,
-        MUN: 5_000_000,
-        PRN: 1_000_000,
-        PTS: 10_000_000,
-        SYM: 500_000,
-        SYS: 3_000_000,
-        TCP: 1_000_000,
-        TMI: 6_000_000,
-        TGP: 2_500_000,
-        TCT: 100_000,
-        TSB: 3_000_000,
-        TCC: 7_500_000,
-        THS: 150_000,
-        TCI: 1_500_000,
-        TCM: 1_000_000,
-        WSU: 1_000_000,
-        WLT: 9_000_000,
-        YAZ: 1_000_000
+    const DIVIDEND_DATA = {
+        THS: {
+            benefit: '1x Box of Medical Supplies',
+            shares: 150_000,
+            payoutCycle: 7,
+            incrementShares: 300_000
+        },
+
+        WSU: {
+            benefit: '10% education course time reduction',
+            shares: 1_000_000,
+            payoutCycle: 7,
+            incrementShares: null
+        },
+
+        TCT: {
+            benefit: '$1,000,000',
+            shares: 100_000,
+            payoutCycle: 31,
+            incrementShares: 200_000
+        },
+
+        IST: {
+            benefit: 'Free education courses',
+            shares: 100_000,
+            payoutCycle: 7,
+            incrementShares: null
+        },
+
+        TCI: {
+            benefit: '10% bank interest bonus',
+            shares: 1_500_000,
+            payoutCycle: 7,
+            incrementShares: 1_500_000
+        },
+
+        FHG: {
+            benefit: '1x Feathery Hotel Coupon',
+            shares: 2_000_000,
+            payoutCycle: 7,
+            incrementShares: 2_000_000
+        },
+
+        MCS: {
+            benefit: '100 energy',
+            shares: 350_000,
+            payoutCycle: 7,
+            incrementShares: 350_000
+        },
+
+        WLT: {
+            benefit: 'Private jet access',
+            shares: 9_000_000,
+            payoutCycle: 7,
+            incrementShares: 9_000_000
+        },
+
+        SYM: {
+            benefit: '1x Drug Pack',
+            shares: 500_000,
+            payoutCycle: 7,
+            incrementShares: 500_000
+        },
+
+        EVL: {
+            benefit: '1000 happiness',
+            shares: 100_000,
+            payoutCycle: 7,
+            incrementShares: 100_000
+        },
+
+        SYS: {
+            benefit: 'An Advanced firewall',
+            shares: 3_000_000,
+            payoutCycle: 7,
+            incrementShares: 3_000_000
+        },
+
+        PRN: {
+            benefit: '1x Erotic DVD',
+            shares: 1_000_000,
+            payoutCycle: 7,
+            incrementShares: 1_000_000
+        },
+
+        LSC: {
+            benefit: '1x Lottery Voucher',
+            shares: 500_000,
+            payoutCycle: 7,
+            incrementShares: 500_000
+        },
+
+        MUN: {
+            benefit: '1x Six-Pack of Energy Drink',
+            shares: 5_000_000,
+            payoutCycle: 7,
+            incrementShares: 5_000_000
+        },
+
+        TCP: {
+            benefit: 'A Company sales boost',
+            shares: 1_000_000,
+            payoutCycle: 7,
+            incrementShares: 1_000_000
+        },
+
+        BAG: {
+            benefit: '1x Ammunition Pack',
+            shares: 3_000_000,
+            payoutCycle: 7,
+            incrementShares: 3_000_000
+        },
+
+        LAG: {
+            benefit: "1x Lawyer's Business Card",
+            shares: 750_000,
+            payoutCycle: 7,
+            incrementShares: 750_000
+        },
+
+        CBD: {
+            benefit: '50 nerve',
+            shares: 350_000,
+            payoutCycle: 7,
+            incrementShares: 345_000
+        },
+
+        ASS: {
+            benefit: '1x Six-Pack of Alcohol',
+            shares: 1_000_000,
+            payoutCycle: 7,
+            incrementShares: 1_000_000
+        },
+
+        ELT: {
+            benefit: '10% home upgrade discount',
+            shares: 5_000_000,
+            payoutCycle: 7,
+            incrementShares: 5_000_000
+        },
+
+        TCM: {
+            benefit: '10% racing skill gain boost',
+            shares: 1_000_000,
+            payoutCycle: 7,
+            incrementShares: 1_000_000
+        },
+
+        MSG: {
+            benefit: 'Free classified advertising',
+            shares: 300_000,
+            payoutCycle: 7,
+            incrementShares: 300_000
+        },
+
+        EWM: {
+            benefit: '1x Box of Grenades',
+            shares: 1_000_000,
+            payoutCycle: 7,
+            incrementShares: 1_000_000
+        },
+
+        TGP: {
+            benefit: 'A Company advertising boost',
+            shares: 2_500_000,
+            payoutCycle: 7,
+            incrementShares: 2_500_000
+        },
+
+        IIL: {
+            benefit: '50% coding time reduction',
+            shares: 1_000_000,
+            payoutCycle: 7,
+            incrementShares: 1_000_000
+        },
+
+        LOS: {
+            benefit: '25% boost to mission credits and money earned',
+            shares: 7_500_000,
+            payoutCycle: 7,
+            incrementShares: 7_500_000
+        },
+
+        PTS: {
+            benefit: '100 points',
+            shares: 10_000_000,
+            payoutCycle: 7,
+            incrementShares: 10_000_000
+        },
+
+        YAZ: {
+            benefit: 'Free banner advertising',
+            shares: 1_000_000,
+            payoutCycle: 7,
+            incrementShares: 1_000_000
+        },
+
+        TSB: {
+            benefit: '$50,000,000',
+            shares: 3_000_000,
+            payoutCycle: 31,
+            incrementShares: 3_000_000
+        },
+
+        CNC: {
+            benefit: '$80,000,000',
+            shares: 7_500_000,
+            payoutCycle: 31,
+            incrementShares: 7_500_000
+        },
+
+        TCC: {
+            benefit: '1x Clothing Cache',
+            shares: 7_500_000,
+            payoutCycle: 31,
+            incrementShares: 7_500_000
+        },
+
+        GRN: {
+            benefit: '$4,000,000',
+            shares: 500_000,
+            payoutCycle: 31,
+            incrementShares: 500_000
+        },
+
+        HRG: {
+            benefit: '1x Random Property',
+            shares: 10_000_000,
+            payoutCycle: 31,
+            incrementShares: 10_000_000
+        },
+
+        TMI: {
+            benefit: '$25,000,000',
+            shares: 6_000_000,
+            payoutCycle: 31,
+            incrementShares: 6_000_000
+        },
+
+        IOU: {
+            benefit: '$12,000,000',
+            shares: 3_000_000,
+            payoutCycle: 31,
+            incrementShares: 3_000_000
+        }
     };
 
     const STOCK_ACRONYMS = {
@@ -115,7 +324,6 @@
         const nameElement = stock.querySelector('[data-name="nameTab"]');
         const priceTab = stock.querySelector('[data-name="priceTab"]');
         const ownedTab = stock.querySelector('[data-name="ownedTab"]');
-        const dividendTab = stock.querySelector('[data-name="dividendTab"]');
 
         if (!nameElement || !priceTab || !ownedTab) {
             return null;
@@ -139,19 +347,19 @@
         const ownedShares = parseNumber(sharesMatch?.[1]);
         const ownedValue = price * ownedShares;
 
-        const benefitText = dividendTab
-            ?.querySelector('[class*="dividend"]')
-            ?.textContent.trim()
-            || dividendTab?.textContent.trim()
-            || '';
+        const dividend = DIVIDEND_DATA[acronym];
 
-        const benefit = benefitText
-            .replace(/(?:Inactive|Active|Ready in \d+ days?|Ready)$/i, '')
-            .trim()
-            || 'Unknown benefit';
+        if (!dividend) {
+            return null;
+        }
 
-        const benefitShares = BENEFIT_SHARES[acronym];
-        const dividendCost = benefitShares ? price * benefitShares : null;
+        const benefit = dividend.benefit;
+        const benefitShares = dividend.shares;
+        const payoutCycle = dividend.payoutCycle;
+        const incrementShares = dividend.incrementShares;
+
+        const dividendCost = price * benefitShares;
+        const incrementCost = incrementShares ? price * incrementShares : null;
 
         return {
             element: stock,
@@ -162,7 +370,10 @@
             ownedShares,
             benefit,
             benefitShares,
-            dividendCost
+            dividendCost,
+            payoutCycle,
+            incrementShares,
+            incrementCost
         };
     }
 
@@ -378,6 +589,10 @@
                         <span class="tsm-selected-benefit">
                             ${stock.benefit}
                         </span>
+
+                        <span class="tsm-selected-cycle">
+                            Every ${stock.payoutCycle} days
+                        </span>
                     </span>
                 </span>
 
@@ -435,9 +650,11 @@
 
     function renderStocks(stocks, portfolioValue) {
         const list = manager.querySelector('.tsm-list');
+
         list.innerHTML = '';
 
         const count = manager.querySelector('.tsm-header-count');
+
         count.textContent = `${stocks.length} stocks`;
 
         const remainingBudget = getRemainingBudget(portfolioValue);
@@ -450,7 +667,11 @@
                 item.type = 'button';
                 item.className = 'tsm-stock';
 
-                const affordable = canAfford(stock, remainingBudget);
+                const affordable = canAfford(
+                    stock,
+                    remainingBudget
+                );
+
                 if (affordable) {
                     item.classList.add('tsm-affordable');
                 } else {
@@ -467,31 +688,39 @@
                     ? `${stock.benefitShares.toLocaleString()} shares`
                     : 'No benefit data';
 
+                const cycle = stock.payoutCycle
+                    ? `Every ${stock.payoutCycle} days`
+                    : '';
+
                 item.innerHTML = `
-                    <span class="tsm-acronym">
-                        ${stock.acronym}
+                <span class="tsm-acronym">
+                    ${stock.acronym}
+                </span>
+
+                <span class="tsm-name">
+                    <span class="tsm-company">
+                        ${stock.name}
                     </span>
 
-                    <span class="tsm-name">
-                        <span class="tsm-company">
-                            ${stock.name}
-                        </span>
-
-                        <span class="tsm-benefit">
-                            ${stock.benefit}
-                        </span>
+                    <span class="tsm-benefit">
+                        ${stock.benefit}
                     </span>
 
-                    <span class="tsm-details">
-                        <span class="tsm-shares">
-                            ${shares}
-                        </span>
-
-                        <span class="tsm-price">
-                            ${cost}
-                        </span>
+                    <span class="tsm-cycle">
+                        ${cycle}
                     </span>
-                `;
+                </span>
+
+                <span class="tsm-details">
+                    <span class="tsm-shares">
+                        ${shares}
+                    </span>
+
+                    <span class="tsm-price">
+                        ${cost}
+                    </span>
+                </span>
+            `;
 
                 if (affordable) {
                     if (IS_MOBILE) {
@@ -851,6 +1080,12 @@
                 white-space: nowrap;
             }
 
+            #torn-dividend-manager .tsm-cycle {
+                color: #777;
+                font-size: 10px;
+                white-space: nowrap;
+            }
+
             #torn-dividend-manager .tsm-details {
                 display: flex;
                 flex-direction: column;
@@ -873,6 +1108,11 @@
 
             #torn-dividend-manager .tsm-stock.tsm-unaffordable .tsm-price {
                 color: #b87878;
+            }
+
+            #torn-dividend-manager .tsm-selected-cycle {
+                color: #777;
+                font-size: 10px;
             }
 
             #torn-dividend-manager .tsm-list {
