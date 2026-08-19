@@ -1,12 +1,14 @@
 // ==UserScript==
 // @name         TORN Dividend Planner
 // @namespace    https://github.com/jhalff/torn-dividend-planner
-// @version      1.0.8
+// @version      1.0.9
 // @description  Build and manage TORN stock dividend combinations
 // @author       Draxeth
-// @match        https://www.torn.com/page.php?sid=stocks
-// @updateURL    https://raw.githubusercontent.com/jhalff/main/torn-dividend-planner/torn-dividend-planner.user.js
-// @downloadURL  https://raw.githubusercontent.com/jhalff/main/torn-dividend-planner/torn-dividend-planner.user.js
+// @match        https://www.torn.com/page.php*
+// @include      https://www.torn.com/page.php?sid=stocks*
+// @run-at       document-start
+// @updateURL    https://raw.githubusercontent.com/jhalff/torn-dividend-planner/main/script.user.js
+// @downloadURL  https://raw.githubusercontent.com/jhalff/torn-dividend-planner/main/script.user.js
 // @supportURL   https://github.com/jhalff/torn-dividend-planner/issues
 // @grant        none
 // ==/UserScript==
@@ -14,10 +16,14 @@
 (function () {
     'use strict';
 
-    debug('TORN Dividend Planner script loaded');
+    const STOCK_SELECTOR = 'ul[data-testid*="stock" i], ul[class*="stock___"], li[data-acronym]';
+    const CONTAINER_SELECTOR = '[class*="stockMarket___"], [data-testid*="stock-market" i]';
 
-    const STOCK_SELECTOR = 'ul.stock___CnywB';
-    const CONTAINER_SELECTOR = '.stockMarket___IoTUH';
+    if (new URL(window.location.href).searchParams.get('sid') !== 'stocks') {
+        return;
+    }
+
+    debug('TORN Dividend Planner script loaded');
 
     const BENEFIT_SHARES = {
         ASS: 1_000_000,
@@ -61,6 +67,21 @@
     let lastState = '';
     let selectedStocks = [];
 
+    function findElement(root, selectors) {
+        for (const selector of selectors) {
+            if (root.matches?.(selector)) {
+                return root;
+            }
+
+            const element = root.querySelector(selector);
+            if (element) {
+                return element;
+            }
+        }
+
+        return null;
+    }
+
     function parseNumber(value) {
         if (!value) {
             return 0;
@@ -70,17 +91,38 @@
     }
 
     function getStockData(stock) {
-        const nameElement = stock.querySelector('[data-name="nameTab"]');
-        const priceElement = stock.querySelector('[data-name="priceTab"] .price___WsxqW');
-        const ownedValueElement = stock.querySelector('[data-name="ownedTab"] .value___MBU9w');
-        const ownedSharesElement = stock.querySelector('[data-name="ownedTab"] .count___yJoKq');
-        const benefitElement = stock.querySelector('[data-name="dividendTab"] .dividend___X_zwW');
+        const nameElement = findElement(stock, [
+            '[data-name="nameTab"]',
+            '[data-testid*="name" i]',
+            '[data-acronym]'
+        ]);
+        const priceElement = findElement(stock, [
+            '[data-name="priceTab"] .price___WsxqW',
+            '[data-name="priceTab"] [class*="price"]',
+            '[data-testid*="price" i]'
+        ]);
+        const ownedValueElement = findElement(stock, [
+            '[data-name="ownedTab"] .value___MBU9w',
+            '[data-name="ownedTab"] [class*="value"]',
+            '[data-testid*="owned-value" i]'
+        ]);
+        const ownedSharesElement = findElement(stock, [
+            '[data-name="ownedTab"] .count___yJoKq',
+            '[data-name="ownedTab"] [class*="count"]',
+            '[data-testid*="owned-shares" i]'
+        ]);
+        const benefitElement = findElement(stock, [
+            '[data-name="dividendTab"] .dividend___X_zwW',
+            '[data-name="dividendTab"] [class*="dividend"]',
+            '[data-testid*="dividend" i]'
+        ]);
 
         if (!nameElement || !priceElement) {
             return null;
         }
 
-        const acronym = nameElement.querySelector('[data-acronym]')?.dataset.acronym;
+        const acronym = nameElement.dataset.acronym
+            || nameElement.querySelector('[data-acronym]')?.dataset.acronym;
         if (!acronym) {
             return null;
         }
@@ -180,10 +222,10 @@
     }
 
     function createManager() {
-        manager = document.createElement('div');
-        manager.id = 'torn-dividend-manager';
+        const newManager = document.createElement('div');
+        newManager.id = 'torn-dividend-manager';
 
-        manager.innerHTML = `
+        newManager.innerHTML = `
             <div class="tsm-header">
                 <div class="tsm-header-title">
                     <strong>Dividend Planner</strong>
@@ -238,11 +280,15 @@
             </div>
         `;
 
-        const stockMarket = document.querySelector(CONTAINER_SELECTOR);
+        const stockMarket = document.querySelector(CONTAINER_SELECTOR)
+            || document.querySelector(STOCK_SELECTOR)?.parentElement;
 
-        if (!stockMarket) {
+        if (!stockMarket?.parentElement) {
+            debug('Stock market container not found yet');
             return false;
         }
+
+        manager = newManager;
 
         stockMarket.parentElement.insertBefore(
             manager,
@@ -909,19 +955,34 @@
     function waitForStocks() {
         const stocks = document.querySelectorAll(STOCK_SELECTOR);
         if (!stocks.length) {
-            requestAnimationFrame(waitForStocks);
+            setTimeout(waitForStocks, 1000);
 
             return;
         }
 
         if (!manager) {
-            createManager();
+            if (!createManager()) {
+                setTimeout(waitForStocks, 1000);
+
+                return;
+            }
         }
 
         sortAndRender();
 
         setTimeout(waitForStocks, 1000);
     }
+
+    const stockObserver = new MutationObserver(() => {
+        if (!manager || !document.querySelector(STOCK_SELECTOR)) {
+            waitForStocks();
+        }
+    });
+
+    stockObserver.observe(document, {
+        childList: true,
+        subtree: true
+    });
 
     waitForStocks();
 
@@ -946,7 +1007,14 @@
                 white-space: pre-wrap;
             `;
 
-            document.body.appendChild(box);
+            const root = document.body || document.documentElement;
+            if (!root) {
+                setTimeout(() => debug(message), 0);
+
+                return;
+            }
+
+            root.appendChild(box);
         }
 
         box.textContent += `${message}\n`;
