@@ -124,11 +124,11 @@
 
 #torn-dividend-manager .tsm-selected-stock {
     display: grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: 40px 1fr 110px;
     align-items: center;
     gap: 8px;
     width: 100%;
-    padding: 9px 12px;
+    padding: 7px 12px;
     border: 0;
     border-bottom: 1px solid #333;
     background: transparent;
@@ -142,10 +142,7 @@
 }
 
 #torn-dividend-manager .tsm-selected-main {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    min-width: 0;
+    display: contents;
 }
 
 #torn-dividend-manager .tsm-selected-acronym {
@@ -227,7 +224,7 @@
 
 #torn-dividend-manager .tsm-stock {
     display: grid;
-    grid-template-columns: 55px 1fr auto;
+    grid-template-columns: 40px 1fr 110px;
     align-items: center;
     gap: 8px;
     width: 100%;

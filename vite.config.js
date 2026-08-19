@@ -3,7 +3,7 @@ import { defineConfig } from 'vite';
 const userscriptHeader = `// ==UserScript==
 // @name         TORN Dividend Planner
 // @namespace    https://github.com/jhalff/torn-dividend-planner
-// @version      1.2.0
+// @version      1.2.2
 // @description  Build and manage TORN stock dividend combinations
 // @author       Draxeth
 // @match        https://www.torn.com/page.php*
