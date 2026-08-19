@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         TORN Dividend Planner
 // @namespace    https://github.com/jhalff/torn-dividend-planner
-// @version      1.0.27
+// @version      1.0.28
 // @description  Build and manage TORN stock dividend combinations
 // @author       Draxeth
 // @match        https://www.torn.com/page.php*
@@ -61,6 +61,44 @@
         YAZ: 1_000_000
     };
 
+    const STOCK_ACRONYMS = {
+        'Torn City Health Service': 'THS',
+        'West Side University': 'WSU',
+        'The Torn City Times': 'TCT',
+        'International School TC': 'IST',
+        'Torn City Investments': 'TCI',
+        'Feathery Hotels Group': 'FHG',
+        'Mc Smoogle Corp': 'MCS',
+        'Wind Lines Travel': 'WLT',
+        'Symbiotic Ltd.': 'SYM',
+        'Evil Ducks Candy Corp': 'EVL',
+        'Syscore MFG': 'SYS',
+        'Performance Ribaldry': 'PRN',
+        'Lucky Shot Casino': 'LSC',
+        'Munster Beverage Corp.': 'MUN',
+        'TC Media Productions': 'TCP',
+        "Big Al's Gun Shop": 'BAG',
+        'Legal Authorities Group': 'LAG',
+        'Herbal Releaf Co.': 'CBD',
+        'Alcoholics Synonymous': 'ASS',
+        'Empty Lunchbox Traders': 'ELT',
+        'Torn City Motors': 'TCM',
+        'Messaging Inc.': 'MSG',
+        'Eaglewood Mercenary': 'EWM',
+        'Tell Group Plc.': 'TGP',
+        'I Industries Ltd.': 'IIL',
+        'Lo Squalo Waste': 'LOS',
+        'PointLess': 'PTS',
+        'Yazoo': 'YAZ',
+        'Torn & Shanghai Banking': 'TSB',
+        'Crude & Co': 'CNC',
+        'Torn City Clothing': 'TCC',
+        'Grain': 'GRN',
+        'Home Retail Group': 'HRG',
+        'TC Music Industries': 'TMI',
+        'Insured On Us': 'IOU'
+    };
+
     let manager = null;
     let selectedStocks = [];
 
@@ -93,16 +131,22 @@
             return null;
         }
 
-        const acronym = nameElement.dataset.acronym
-            || nameElement.querySelector('[data-acronym]')?.dataset.acronym;
+        const rawName = nameElement.textContent
+            .trim()
+            .replace(/^\([A-Z]+\)\s*/, '')
+            .trim();
+
+        const acronym =
+            nameElement.dataset.acronym ||
+            nameElement.querySelector('[data-acronym]')
+                ?.dataset.acronym ||
+            STOCK_ACRONYMS[rawName];
 
         if (!acronym) {
             return null;
         }
 
-        const name = nameElement.textContent
-            .replace(`(${acronym})`, '')
-            .trim();
+        const name = rawName;
 
         /*
          * Price
@@ -136,33 +180,7 @@
             sharesMatch?.[1]
         );
 
-        /*
-         * Owned value
-         *
-         * Look for the dollar value directly inside the
-         * owned tab.
-         */
-        const ownedValueMatch = ownedTab.textContent.match(
-            /\$[\d,]+(?:\.\d+)?/
-        );
-
-        let ownedValue = parseNumber(
-            ownedValueMatch?.[0]
-        );
-
-        /*
-         * Fallback:
-         *
-         * If TORN hasn't exposed the value yet, calculate
-         * it from the price and number of shares.
-         */
-        if (
-            ownedValue === 0 &&
-            ownedShares > 0 &&
-            price > 0
-        ) {
-            ownedValue = price * ownedShares;
-        }
+        const ownedValue = price * ownedShares;
 
         const benefit = dividendTab
             ?.querySelector('[class*="dividend"]')
@@ -280,7 +298,6 @@
                 <div class="tsm-header-title">
                     <strong>Dividend Planner</strong>
                     <span class="tsm-header-count"></span>
-                    <span class="tsm-debug"></span>
                 </div>
 
                 <button
@@ -985,54 +1002,10 @@
         document.head.appendChild(style);
     }
 
-    function renderStockDebug() {
-        if (!manager) {
-            return;
-        }
-
-        const list = manager.querySelector('.tsm-list');
-
-        if (!list) {
-            return;
-        }
-
-        const stockNames = [
-            ...document.querySelectorAll('[data-name="nameTab"]')
-        ];
-
-        list.innerHTML = '';
-
-        stockNames.forEach((nameElement, index) => {
-            const acronym =
-                nameElement.dataset.acronym ||
-                nameElement.querySelector('[data-acronym]')
-                    ?.dataset.acronym ||
-                'UNKNOWN';
-
-            const name = nameElement.textContent.trim();
-
-            const item = document.createElement('div');
-
-            item.style.padding = '8px 12px';
-            item.style.borderBottom = '1px solid #333';
-            item.style.color = '#ccc';
-
-            item.textContent =
-                `${index + 1}. ${acronym} - ${name}`;
-
-            list.appendChild(item);
-        });
-    }
-
     function waitForStocks() {
         const stockNames = document.querySelectorAll(
             '[data-name="nameTab"]'
         );
-
-        const debug = document.querySelector('.tsm-debug');
-        if (debug) {
-            debug.innerHTML = `Found ${stockNames.length} stocks`;
-        }
 
         if (!stockNames.length) {
             setTimeout(waitForStocks, 500);
@@ -1048,8 +1021,7 @@
             }
         }
 
-        // sortAndRender();
-        renderStockDebug();
+        sortAndRender();
 
         setTimeout(waitForStocks, 1000);
     }
