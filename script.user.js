@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         TORN Dividend Planner
 // @namespace    https://github.com/jhalff/torn-dividend-planner
-// @version      1.0.28
+// @version      1.1.0
 // @description  Build and manage TORN stock dividend combinations
 // @author       Draxeth
 // @match        https://www.torn.com/page.php*
@@ -111,21 +111,10 @@
     }
 
     function getStockData(stock) {
-        const nameElement = stock.querySelector(
-            '[data-name="nameTab"]'
-        );
-
-        const priceTab = stock.querySelector(
-            '[data-name="priceTab"]'
-        );
-
-        const ownedTab = stock.querySelector(
-            '[data-name="ownedTab"]'
-        );
-
-        const dividendTab = stock.querySelector(
-            '[data-name="dividendTab"]'
-        );
+        const nameElement = stock.querySelector('[data-name="nameTab"]');
+        const priceTab = stock.querySelector('[data-name="priceTab"]');
+        const ownedTab = stock.querySelector('[data-name="ownedTab"]');
+        const dividendTab = stock.querySelector('[data-name="dividendTab"]');
 
         if (!nameElement || !priceTab || !ownedTab) {
             return null;
@@ -136,50 +125,17 @@
             .replace(/^\([A-Z]+\)\s*/, '')
             .trim();
 
-        const acronym =
-            nameElement.dataset.acronym ||
-            nameElement.querySelector('[data-acronym]')
-                ?.dataset.acronym ||
-            STOCK_ACRONYMS[rawName];
-
+        const acronym = nameElement.dataset.acronym || nameElement.querySelector('[data-acronym]')?.dataset.acronym || STOCK_ACRONYMS[rawName];
         if (!acronym) {
             return null;
         }
 
         const name = rawName;
-
-        /*
-         * Price
-         *
-         * Example:
-         * "391.86 $1.20 0.31%"
-         *
-         * The first number is always the stock price.
-         */
-        const priceMatch = priceTab.textContent.match(
-            /\d+(?:\.\d+)/
-        );
-
+        const priceMatch = priceTab.textContent.match(/\d+(?:\.\d+)/);
         const price = parseNumber(priceMatch?.[0]);
-
-        /*
-         * Owned shares
-         *
-         * TORN provides this very conveniently through
-         * the aria-label:
-         *
-         * "Owned: 150000 shares"
-         */
         const ownedLabel = ownedTab.getAttribute('aria-label') || '';
-
-        const sharesMatch = ownedLabel.match(
-            /Owned:\s*([\d,]+)\s*shares/i
-        );
-
-        const ownedShares = parseNumber(
-            sharesMatch?.[1]
-        );
-
+        const sharesMatch = ownedLabel.match(/Owned:\s*([\d,]+)\s*shares/i);
+        const ownedShares = parseNumber(sharesMatch?.[1]);
         const ownedValue = price * ownedShares;
 
         const benefit = dividendTab
@@ -189,10 +145,7 @@
             || 'Unknown benefit';
 
         const benefitShares = BENEFIT_SHARES[acronym];
-
-        const dividendCost = benefitShares
-            ? price * benefitShares
-            : null;
+        const dividendCost = benefitShares ? price * benefitShares : null;
 
         return {
             element: stock,
@@ -348,20 +301,14 @@
             </div>
         `;
 
-        const stockMarket = document.querySelector(CONTAINER_SELECTOR)
-            || document.querySelector(STOCK_SELECTOR)?.parentElement;
-
+        const stockMarket = document.querySelector(CONTAINER_SELECTOR) || document.querySelector(STOCK_SELECTOR)?.parentElement;
         if (!stockMarket?.parentElement) {
             return false;
         }
 
         manager = newManager;
 
-        stockMarket.parentElement.insertBefore(
-            manager,
-            stockMarket
-        );
-
+        stockMarket.parentElement.insertBefore(manager, stockMarket);
         addStyles();
 
         const toggle = manager.querySelector('.tsm-toggle');
@@ -370,18 +317,8 @@
             const collapsed = manager.classList.toggle('is-collapsed');
 
             toggle.textContent = collapsed ? '▼' : '▲';
-
-            toggle.setAttribute(
-                'aria-expanded',
-                String(!collapsed)
-            );
-
-            toggle.setAttribute(
-                'aria-label',
-                collapsed
-                    ? 'Expand stock manager'
-                    : 'Collapse stock manager'
-            );
+            toggle.setAttribute('aria-expanded', String(!collapsed));
+            toggle.setAttribute('aria-label', collapsed ? 'Expand stock manager' : 'Collapse stock manager');
         });
 
         return true;
@@ -972,6 +909,10 @@
             }
 
             @media screen and (max-width: 800px) {
+                #torn-dividend-manager .tsm-tooltip {
+                    display: none;
+                }
+
                 #torn-dividend-manager .tsm-layout {
                     display: flex;
                     flex-direction: column;
