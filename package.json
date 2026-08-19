@@ -9,7 +9,6 @@
   "keywords": [],
   "type": "commonjs",
   "devDependencies": {
-    "vite": "^8.2.1",
-    "vite-plugin-banner": "^0.8.1"
+    "vite": "^8.2.1"
   }
 }
