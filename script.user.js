@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         TORN Dividend Planner
 // @namespace    https://github.com/jhalff/torn-dividend-planner
-// @version      1.0.11
+// @version      1.0.12
 // @description  Build and manage TORN stock dividend combinations
 // @author       Draxeth
 // @match        https://www.torn.com/page.php*
@@ -964,35 +964,41 @@
 
     function waitForStocks() {
         const stocks = document.querySelectorAll(STOCK_SELECTOR);
-        if (!stocks.length) {
-            setTimeout(waitForStocks, 1000);
 
+        if (!stocks.length) {
             return;
         }
 
         if (!manager) {
             if (!createManager()) {
-                setTimeout(waitForStocks, 1000);
-
                 return;
             }
         }
 
         sortAndRender();
-
-        setTimeout(waitForStocks, 1000);
     }
 
-    const stockObserver = new MutationObserver(() => {
-        if (!manager || !document.querySelector(STOCK_SELECTOR)) {
-            waitForStocks();
+    function observeStockMarket() {
+        const stockMarket = document.querySelector(CONTAINER_SELECTOR);
+
+        if (!stockMarket) {
+            setTimeout(observeStockMarket, 500);
+
+            return;
         }
-    });
 
-    stockObserver.observe(document, {
-        childList: true,
-        subtree: true
-    });
+        const observer = new MutationObserver(() => {
+            sortAndRender();
+        });
 
-    waitForStocks();
+        observer.observe(stockMarket, {
+            childList: true,
+            subtree: true,
+            characterData: true
+        });
+
+        waitForStocks();
+    }
+
+    observeStockMarket();
 })();
