@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         TORN Dividend Planner
 // @namespace    https://github.com/jhalff/torn-dividend-planner
-// @version      1.0.18
+// @version      1.0.19
 // @description  Build and manage TORN stock dividend combinations
 // @author       Draxeth
 // @match        https://www.torn.com/page.php*
@@ -16,7 +16,7 @@
 (function () {
     'use strict';
 
-    const STOCK_SELECTOR = 'ul[data-testid*="stock" i], ul[class*="stock___"], li[data-acronym]';
+    const STOCK_SELECTOR = 'ul[data-testid*="stock" i], ul[class*="stock___"]';
     const CONTAINER_SELECTOR = '[class*="stockMarket___"], [data-testid*="stock-market" i]';
 
     if (new URL(window.location.href).searchParams.get('sid') !== 'stocks') {
@@ -133,7 +133,9 @@
             .replace(`(${acronym})`, '')
             .trim();
 
-        const price = parseNumber(priceElement.textContent);
+        const price = parseNumber(
+            priceElement.textContent
+        );
 
         const ownedShares = parseNumber(
             ownedSharesElement?.textContent
@@ -143,11 +145,11 @@
             ownedValueElement?.textContent
         );
 
-        /*
-         * TORN may not have rendered the owned value element yet.
-         * If we have the share count, calculate the value ourselves.
-         */
-        if (ownedValue === 0 && ownedShares > 0 && price > 0) {
+        if (
+            ownedValue === 0 &&
+            ownedShares > 0 &&
+            price > 0
+        ) {
             ownedValue = price * ownedShares;
         }
 
