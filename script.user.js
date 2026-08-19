@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         TORN Dividend Planner
 // @namespace    https://github.com/jhalff/torn-dividend-planner
-// @version      1.1.1
+// @version      1.1.2
 // @description  Build and manage TORN stock dividend combinations
 // @author       Draxeth
 // @match        https://www.torn.com/page.php*
@@ -139,10 +139,15 @@
         const ownedShares = parseNumber(sharesMatch?.[1]);
         const ownedValue = price * ownedShares;
 
-        const benefit = dividendTab
+        const benefitText = dividendTab
             ?.querySelector('[class*="dividend"]')
             ?.textContent.trim()
             || dividendTab?.textContent.trim()
+            || '';
+
+        const benefit = benefitText
+            .replace(/(?:Inactive|Active|Ready in \d+ days?|Ready)$/i, '')
+            .trim()
             || 'Unknown benefit';
 
         const benefitShares = BENEFIT_SHARES[acronym];
@@ -470,6 +475,10 @@
                     <span class="tsm-name">
                         <span class="tsm-company">
                             ${stock.name}
+                        </span>
+
+                        <span class="tsm-benefit">
+                            ${stock.benefit}
                         </span>
                     </span>
 
@@ -808,15 +817,15 @@
                 font-weight: bold;
             }
 
-            #torn-dividend-manager .tsm-affordable .tsm-acronym {
+            #torn-dividend-manager .tsm-stock.tsm-affordable .tsm-acronym {
                 color: #8fc98f;
             }
 
-            #torn-dividend-manager .tsm-unaffordable .tsm-acronym {
+            #torn-dividend-manager .tsm-stock.tsm-unaffordable .tsm-acronym {
                 color: #c47b7b;
             }
 
-            #torn-dividend-manager .tsm-selected .tsm-acronym {
+            #torn-dividend-manager .tsm-stock.tsm-selected .tsm-acronym {
                 color: #8fc98f;
             }
 
@@ -829,6 +838,14 @@
 
             #torn-dividend-manager .tsm-company {
                 color: #ccc;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            #torn-dividend-manager .tsm-benefit {
+                color: #8f8f8f;
+                font-size: 11px;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
@@ -854,7 +871,7 @@
                 white-space: nowrap;
             }
 
-            #torn-dividend-manager .tsm-unaffordable .tsm-price {
+            #torn-dividend-manager .tsm-stock.tsm-unaffordable .tsm-price {
                 color: #b87878;
             }
 
