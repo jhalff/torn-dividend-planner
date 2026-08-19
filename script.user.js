@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         TORN Dividend Planner
 // @namespace    https://github.com/jhalff/torn-dividend-planner
-// @version      1.0.22
+// @version      1.0.23
 // @description  Build and manage TORN stock dividend combinations
 // @author       Draxeth
 // @match        https://www.torn.com/page.php*
@@ -976,7 +976,10 @@
             '[data-name="nameTab"]'
         );
 
-        document.querySelector('.tsm-debug').innerHTML = `Found ${stockNames.length} stocks`;
+        const debug = document.querySelector('.tsm-debug');
+        if (debug) {
+            debug.innerHTML = `Found ${stockNames.length} stocks`;
+        }
 
         if (!stockNames.length) {
             setTimeout(waitForStocks, 500);
