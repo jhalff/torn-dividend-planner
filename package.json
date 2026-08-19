@@ -1,0 +1,15 @@
+{
+  "name": "torn-dividend-planner",
+  "version": "1.0.0",
+  "description": "A Tampermonkey userscript for [TORN](https://www.torn.com/) that makes planning stock dividends faster and easier.",
+  "main": "index.js",
+  "scripts": {
+    "build": "vite build"
+  },
+  "keywords": [],
+  "type": "commonjs",
+  "devDependencies": {
+    "vite": "^8.2.1",
+    "vite-plugin-banner": "^0.8.1"
+  }
+}

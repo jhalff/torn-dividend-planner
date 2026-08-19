@@ -1,0 +1,414 @@
+#torn-dividend-manager {
+    margin-bottom: 10px;
+    background: #242424;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+#torn-dividend-manager .tsm-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    background: #303030;
+    color: #ddd;
+    font-size: 14px;
+}
+
+#torn-dividend-manager .tsm-header-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+#torn-dividend-manager .tsm-header-count {
+    color: #888;
+    font-size: 12px;
+}
+
+#torn-dividend-manager .tsm-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: 0;
+    border-radius: 3px;
+    background: #3a3a3a;
+    color: #aaa;
+    font-size: 10px;
+    cursor: pointer;
+}
+
+#torn-dividend-manager .tsm-toggle:hover {
+    background: #525252;
+    color: #fff;
+}
+
+#torn-dividend-manager .tsm-content {
+    display: block;
+}
+
+#torn-dividend-manager.is-collapsed .tsm-content {
+    display: none;
+}
+
+#torn-dividend-manager .tsm-layout {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+}
+
+#torn-dividend-manager .tsm-stocks-panel {
+    min-width: 0;
+    border-right: 1px solid #333;
+}
+
+#torn-dividend-manager .tsm-right-panel {
+    min-width: 0;
+}
+
+#torn-dividend-manager .tsm-portfolio {
+    background: #292929;
+    border-bottom: 1px solid #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 12px;
+}
+
+#torn-dividend-manager .tsm-portfolio-value {
+    color: #777;
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+}
+
+#torn-dividend-manager .tsm-portfolio-value strong {
+    color: #aaa;
+}
+
+#torn-dividend-manager .tsm-portfolio-remaining {
+    margin-left: auto;
+    color: #777;
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+}
+
+#torn-dividend-manager .tsm-portfolio-remaining strong {
+    color: #aaa;
+}
+
+#torn-dividend-manager .tsm-budget-negative {
+    background: #3a2424;
+}
+
+#torn-dividend-manager .tsm-combination {
+    padding: 9px 12px;
+    border-bottom: 1px solid #333;
+}
+
+#torn-dividend-manager .tsm-combination-list {
+    height: 600px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#torn-dividend-manager .tsm-empty {
+    padding: 12px;
+    color: #777;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+#torn-dividend-manager .tsm-selected-stock {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 9px 12px;
+    border: 0;
+    border-bottom: 1px solid #333;
+    background: transparent;
+    color: #ccc;
+    text-align: left;
+    cursor: pointer;
+}
+
+#torn-dividend-manager .tsm-selected-stock:hover {
+    background: #333;
+}
+
+#torn-dividend-manager .tsm-selected-main {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+#torn-dividend-manager .tsm-selected-acronym {
+    color: #8fc98f;
+    font-weight: bold;
+}
+
+#torn-dividend-manager .tsm-selected-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+#torn-dividend-manager .tsm-selected-company {
+    color: #ccc;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#torn-dividend-manager .tsm-selected-benefit {
+    color: #8f8f8f;
+    font-size: 11px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#torn-dividend-manager .tsm-selected-details {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+}
+
+#torn-dividend-manager .tsm-selected-shares {
+    color: #777;
+    font-size: 10px;
+    white-space: nowrap;
+}
+
+#torn-dividend-manager .tsm-selected-cost {
+    color: #fff;
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+#torn-dividend-manager .tsm-combination-summary {
+    padding: 10px 12px;
+    border-top: 1px solid #333;
+    background: #292929;
+    color: #777;
+    font-size: 11px;
+}
+
+#torn-dividend-manager .tsm-combination-summary>div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+#torn-dividend-manager .tsm-combination-summary strong {
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+}
+
+#torn-dividend-manager .tsm-combination-remaining {
+    margin-top: 4px;
+}
+
+#torn-dividend-manager .tsm-stocks-panel,
+#torn-dividend-manager .tsm-right-panel {
+    min-width: 0;
+    max-width: 100%;
+}
+
+#torn-dividend-manager .tsm-stock {
+    display: grid;
+    grid-template-columns: 55px 1fr auto;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 7px 12px;
+    border: 0;
+    border-bottom: 1px solid #333;
+    background: transparent;
+    color: #ccc;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.1s ease;
+}
+
+#torn-dividend-manager .tsm-stock:hover {
+    background: #333;
+}
+
+#torn-dividend-manager .tsm-stock:disabled {
+    cursor: not-allowed;
+}
+
+#torn-dividend-manager .tsm-stock.tsm-affordable {
+    background: rgba(70, 130, 70, 0.08);
+}
+
+#torn-dividend-manager .tsm-stock.tsm-affordable:hover {
+    background: rgba(70, 130, 70, 0.20);
+}
+
+#torn-dividend-manager .tsm-stock.tsm-unaffordable {
+    background: rgba(130, 55, 55, 0.08);
+    opacity: 0.65;
+}
+
+#torn-dividend-manager .tsm-stock.tsm-selected {
+    background: rgba(70, 110, 70, 0.22);
+    box-shadow: inset 3px 0 0 #6fa66f;
+}
+
+#torn-dividend-manager .tsm-stock.tsm-selected:hover {
+    background: rgba(70, 110, 70, 0.30);
+}
+
+#torn-dividend-manager .tsm-acronym {
+    color: #aaa;
+    font-weight: bold;
+}
+
+#torn-dividend-manager .tsm-stock.tsm-affordable .tsm-acronym {
+    color: #8fc98f;
+}
+
+#torn-dividend-manager .tsm-stock.tsm-unaffordable .tsm-acronym {
+    color: #c47b7b;
+}
+
+#torn-dividend-manager .tsm-stock.tsm-selected .tsm-acronym {
+    color: #8fc98f;
+}
+
+#torn-dividend-manager .tsm-name {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+#torn-dividend-manager .tsm-company {
+    color: #ccc;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#torn-dividend-manager .tsm-benefit {
+    color: #8f8f8f;
+    font-size: 11px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#torn-dividend-manager .tsm-cycle {
+    color: #777;
+    font-size: 10px;
+    white-space: nowrap;
+}
+
+#torn-dividend-manager .tsm-details {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+}
+
+#torn-dividend-manager .tsm-shares {
+    color: #777;
+    font-size: 10px;
+    white-space: nowrap;
+}
+
+#torn-dividend-manager .tsm-price {
+    color: #fff;
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+#torn-dividend-manager .tsm-stock.tsm-unaffordable .tsm-price {
+    color: #b87878;
+}
+
+#torn-dividend-manager .tsm-selected-cycle {
+    color: #777;
+    font-size: 10px;
+}
+
+#torn-dividend-manager .tsm-list {
+    height: 600px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#torn-dividend-manager .tsm-list::-webkit-scrollbar,
+#torn-dividend-manager .tsm-combination-list::-webkit-scrollbar {
+    width: 2px;
+}
+
+#torn-dividend-manager .tsm-list::-webkit-scrollbar-track,
+#torn-dividend-manager .tsm-combination-list::-webkit-scrollbar-track {
+    background: #242424;
+}
+
+#torn-dividend-manager .tsm-list::-webkit-scrollbar-thumb,
+#torn-dividend-manager .tsm-combination-list::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 3px;
+}
+
+#torn-dividend-manager .tsm-label {
+    color: #888;
+    font-size: 11px;
+    margin-bottom: 3px;
+}
+
+#torn-dividend-manager .tsm-section-title {
+    padding: 9px 12px;
+    background: #303030;
+    color: #aaa;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+@media screen and (max-width: 800px) {
+    #torn-dividend-manager .tsm-tooltip {
+        display: none;
+    }
+
+    #torn-dividend-manager .tsm-layout {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    #torn-dividend-manager .tsm-stocks-panel,
+    #torn-dividend-manager .tsm-right-panel {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    #torn-dividend-manager .tsm-stocks-panel {
+        border-right: 0;
+        border-bottom: 1px solid #333;
+    }
+
+    #torn-dividend-manager .tsm-list,
+    #torn-dividend-manager .tsm-combination-list {
+        height: auto;
+        max-height: none;
+        overflow: visible;
+    }
+}
