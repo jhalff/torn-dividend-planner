@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         TORN Dividend Planner
 // @namespace    https://github.com/jhalff/torn-dividend-planner
-// @version      1.0.23
+// @version      1.0.24
 // @description  Build and manage TORN stock dividend combinations
 // @author       Draxeth
 // @match        https://www.torn.com/page.php*
@@ -64,21 +64,6 @@
     let manager = null;
     let selectedStocks = [];
 
-    function findElement(root, selectors) {
-        for (const selector of selectors) {
-            if (root.matches?.(selector)) {
-                return root;
-            }
-
-            const element = root.querySelector(selector);
-            if (element) {
-                return element;
-            }
-        }
-
-        return null;
-    }
-
     function parseNumber(value) {
         if (!value) {
             return 0;
@@ -88,37 +73,23 @@
     }
 
     function getStockData(stock) {
-        const nameElement = findElement(stock, [
-            '[data-name="nameTab"]',
-            '[data-testid*="name" i]',
-            '[data-acronym]'
-        ]);
+        const nameElement = stock.querySelector(
+            '[data-name="nameTab"]'
+        );
 
-        const priceElement = findElement(stock, [
-            '[data-name="priceTab"] .price___WsxqW',
-            '[data-name="priceTab"] [class*="price"]',
-            '[data-testid*="price" i]'
-        ]);
+        const priceTab = stock.querySelector(
+            '[data-name="priceTab"]'
+        );
 
-        const ownedValueElement = findElement(stock, [
-            '[data-name="ownedTab"] .value___MBU9w',
-            '[data-name="ownedTab"] [class*="value"]',
-            '[data-testid*="owned-value" i]'
-        ]);
+        const ownedTab = stock.querySelector(
+            '[data-name="ownedTab"]'
+        );
 
-        const ownedSharesElement = findElement(stock, [
-            '[data-name="ownedTab"] .count___yJoKq',
-            '[data-name="ownedTab"] [class*="count"]',
-            '[data-testid*="owned-shares" i]'
-        ]);
+        const dividendTab = stock.querySelector(
+            '[data-name="dividendTab"]'
+        );
 
-        const benefitElement = findElement(stock, [
-            '[data-name="dividendTab"] .dividend___X_zwW',
-            '[data-name="dividendTab"] [class*="dividend"]',
-            '[data-testid*="dividend" i]'
-        ]);
-
-        if (!nameElement || !priceElement) {
+        if (!nameElement || !priceTab || !ownedTab) {
             return null;
         }
 
@@ -133,18 +104,58 @@
             .replace(`(${acronym})`, '')
             .trim();
 
-        const price = parseNumber(
-            priceElement.textContent
+        /*
+         * Price
+         *
+         * Example:
+         * "391.86 $1.20 0.31%"
+         *
+         * The first number is always the stock price.
+         */
+        const priceMatch = priceTab.textContent.match(
+            /\d+(?:\.\d+)/
+        );
+
+        const price = parseNumber(priceMatch?.[0]);
+
+        /*
+         * Owned shares
+         *
+         * TORN provides this very conveniently through
+         * the aria-label:
+         *
+         * "Owned: 150000 shares"
+         */
+        const ownedLabel = ownedTab.getAttribute('aria-label') || '';
+
+        const sharesMatch = ownedLabel.match(
+            /Owned:\s*([\d,]+)\s*shares/i
         );
 
         const ownedShares = parseNumber(
-            ownedSharesElement?.textContent
+            sharesMatch?.[1]
+        );
+
+        /*
+         * Owned value
+         *
+         * Look for the dollar value directly inside the
+         * owned tab.
+         */
+        const ownedValueMatch = ownedTab.textContent.match(
+            /\$[\d,]+(?:\.\d+)?/
         );
 
         let ownedValue = parseNumber(
-            ownedValueElement?.textContent
+            ownedValueMatch?.[0]
         );
 
+        /*
+         * Fallback:
+         *
+         * If TORN hasn't exposed the value yet, calculate
+         * it from the price and number of shares.
+         */
         if (
             ownedValue === 0 &&
             ownedShares > 0 &&
@@ -153,7 +164,10 @@
             ownedValue = price * ownedShares;
         }
 
-        const benefit = benefitElement?.textContent.trim()
+        const benefit = dividendTab
+            ?.querySelector('[class*="dividend"]')
+            ?.textContent.trim()
+            || dividendTab?.textContent.trim()
             || 'Unknown benefit';
 
         const benefitShares = BENEFIT_SHARES[acronym];
