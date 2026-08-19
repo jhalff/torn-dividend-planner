@@ -16,7 +16,7 @@
 (function () {
     'use strict';
 
-    const STOCK_SELECTOR = 'ul[data-testid*="stock" i], ul[class*="stock___"]';
+    const STOCK_SELECTOR = '[data-name="nameTab"]';
     const CONTAINER_SELECTOR = '[class*="stockMarket___"], [data-testid*="stock-market" i]';
 
     if (new URL(window.location.href).searchParams.get('sid') !== 'stocks') {
@@ -176,9 +176,25 @@
     }
 
     function getStocks() {
-        return [
-            ...document.querySelectorAll(STOCK_SELECTOR)
-        ]
+        const stocks = [];
+
+        document
+            .querySelectorAll(STOCK_SELECTOR)
+            .forEach(nameElement => {
+                const stock = nameElement.closest('ul');
+
+                if (!stock) {
+                    return;
+                }
+
+                if (stocks.includes(stock)) {
+                    return;
+                }
+
+                stocks.push(stock);
+            });
+
+        return stocks
             .map(getStockData)
             .filter(Boolean);
     }
@@ -955,42 +971,28 @@
     }
 
     function waitForStocks() {
-        const stocks = document.querySelectorAll(STOCK_SELECTOR);
+        const stockNames = document.querySelectorAll(
+            '[data-name="nameTab"]'
+        );
 
-        if (!stocks.length) {
+        if (!stockNames.length) {
+            setTimeout(waitForStocks, 500);
+
             return;
         }
 
         if (!manager) {
             if (!createManager()) {
+                setTimeout(waitForStocks, 500);
+
                 return;
             }
         }
 
         sortAndRender();
+
+        setTimeout(waitForStocks, 1000);
     }
 
-    function observeStockMarket() {
-        const stockMarket = document.querySelector(CONTAINER_SELECTOR);
-
-        if (!stockMarket) {
-            setTimeout(observeStockMarket, 500);
-
-            return;
-        }
-
-        const observer = new MutationObserver(() => {
-            sortAndRender();
-        });
-
-        observer.observe(stockMarket, {
-            childList: true,
-            subtree: true,
-            characterData: true
-        });
-
-        waitForStocks();
-    }
-
-    observeStockMarket();
+    waitForStocks();
 })();
