@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         TORN Dividend Planner
 // @namespace    https://github.com/jhalff/torn-dividend-planner
-// @version      1.0.1
+// @version      1.0.2
 // @description  Build and manage TORN stock dividend combinations
 // @author       Draxeth
 // @match        https://www.torn.com/page.php?sid=stocks
@@ -555,7 +555,7 @@
 
             #torn-dividend-manager .tsm-layout {
                 display: grid;
-                grid-template-columns: minmax(400px, 1fr) minmax(315px, 1fr);
+                grid-template-columns: repeat(2, minmax(0, 1fr));
                 align-items: start;
             }
 
@@ -721,6 +721,12 @@
                 margin-top: 4px;
             }
 
+            #torn-dividend-manager .tsm-stocks-panel,
+            #torn-dividend-manager .tsm-right-panel {
+                min-width: 0;
+                max-width: 100%;
+            }
+
             #torn-dividend-manager .tsm-stock {
                 display: grid;
                 grid-template-columns: 55px 1fr auto;
@@ -867,120 +873,30 @@
                 text-transform: uppercase;
             }
 
-            @media (max-width: 800px) {
-                #torn-dividend-manager {
-                    margin-bottom: 8px;
-                    border-radius: 3px;
-                }
-
-                #torn-dividend-manager .tsm-header {
-                    padding: 9px 10px;
-                    font-size: 13px;
-                }
-
-                #torn-dividend-manager .tsm-header-title {
-                    gap: 6px;
-                }
-
-                #torn-dividend-manager .tsm-header-count {
-                    font-size: 11px;
-                }
-
+            @media screen and (max-width: 800px) {
                 #torn-dividend-manager .tsm-layout {
                     display: flex;
                     flex-direction: column;
+                    width: 100%;
+                }
+
+                #torn-dividend-manager .tsm-stocks-panel,
+                #torn-dividend-manager .tsm-right-panel {
+                    width: 100%;
+                    max-width: 100%;
+                    min-width: 0;
                 }
 
                 #torn-dividend-manager .tsm-stocks-panel {
                     border-right: 0;
                     border-bottom: 1px solid #333;
-                    width: 100%;
-                }
-
-                #torn-dividend-manager .tsm-right-panel {
-                    width: 100%;
-                }
-
-                #torn-dividend-manager .tsm-portfolio {
-                    flex-wrap: wrap;
-                    gap: 4px 8px;
-                    padding: 8px 10px;
-                }
-
-                #torn-dividend-manager .tsm-portfolio-title {
-                    font-size: 10px;
-                }
-
-                #torn-dividend-manager .tsm-portfolio-value {
-                    font-size: 11px;
-                }
-
-                #torn-dividend-manager .tsm-portfolio-remaining {
-                    margin-left: auto;
-                    font-size: 10px;
-                }
-
-                #torn-dividend-manager .tsm-section-title {
-                    padding: 8px 10px;
-                    font-size: 11px;
                 }
 
                 #torn-dividend-manager .tsm-list,
                 #torn-dividend-manager .tsm-combination-list {
                     height: auto;
                     max-height: none;
-                    overflow-y: visible;
-                }
-
-                #torn-dividend-manager .tsm-stock {
-                    grid-template-columns: 42px minmax(0, 1fr) auto;
-                    gap: 6px;
-                    padding: 8px 10px;
-                }
-
-                #torn-dividend-manager .tsm-acronym {
-                    font-size: 11px;
-                }
-
-                #torn-dividend-manager .tsm-company {
-                    font-size: 11px;
-                }
-
-                #torn-dividend-manager .tsm-benefit {
-                    font-size: 10px;
-                }
-
-                #torn-dividend-manager .tsm-shares {
-                    font-size: 9px;
-                }
-
-                #torn-dividend-manager .tsm-price {
-                    font-size: 11px;
-                }
-
-                #torn-dividend-manager .tsm-selected-stock {
-                    padding: 8px 10px;
-                }
-
-                #torn-dividend-manager .tsm-selected-company {
-                    font-size: 11px;
-                }
-
-                #torn-dividend-manager .tsm-selected-benefit {
-                    font-size: 10px;
-                }
-
-                #torn-dividend-manager .tsm-selected-shares {
-                    font-size: 9px;
-                }
-
-                #torn-dividend-manager .tsm-selected-cost {
-                    font-size: 11px;
-                }
-
-                #torn-dividend-manager .tsm-combination-summary {
-                    padding: 8px 10px;
-                    font-size: 10px;
+                    overflow: visible;
                 }
             }
         `;
