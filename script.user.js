@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         TORN Dividend Planner
 // @namespace    https://github.com/jhalff/torn-dividend-planner
-// @version      1.0.15
+// @version      1.0.16
 // @description  Build and manage TORN stock dividend combinations
 // @author       Draxeth
 // @match        https://www.torn.com/page.php*
@@ -226,7 +226,7 @@
         newManager.innerHTML = `
             <div class="tsm-header">
                 <div class="tsm-header-title">
-                    <strong>Dividend Planner</strong>
+                    <strong>Dividend Planner text cahnge pls</strong>
                     <span class="tsm-header-count"></span>
                 </div>
 
