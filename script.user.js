@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         TORN Dividend Planner
 // @namespace    https://github.com/jhalff/torn-dividend-planner
-// @version      1.0.6
+// @version      1.0.7
 // @description  Build and manage TORN stock dividend combinations
 // @author       Draxeth
 // @match        https://www.torn.com/page.php?sid=stocks
@@ -14,8 +14,7 @@
 (function () {
     'use strict';
 
-    alert('TORN Dividend Planner loaded');
-    console.log('TORN Dividend Planner loaded');
+    debug('TORN Dividend Planner script loaded');
 
     const STOCK_SELECTOR = 'ul.stock___CnywB';
     const CONTAINER_SELECTOR = '.stockMarket___IoTUH';
@@ -907,21 +906,8 @@
         document.head.appendChild(style);
     }
 
-    let diagnosticShown = false;
-
     function waitForStocks() {
         const stocks = document.querySelectorAll(STOCK_SELECTOR);
-
-        if (!diagnosticShown) {
-            diagnosticShown = true;
-
-            alert(
-                `[TORN Dividend Planner]\n\n` +
-                `Stocks found: ${stocks.length}\n` +
-                `URL: ${window.location.href}`
-            );
-        }
-
         if (!stocks.length) {
             requestAnimationFrame(waitForStocks);
 
@@ -938,4 +924,31 @@
     }
 
     waitForStocks();
+
+    function debug(message) {
+        let box = document.querySelector('#tsm-debug');
+
+        if (!box) {
+            box = document.createElement('div');
+
+            box.id = 'tsm-debug';
+
+            box.style.cssText = `
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            z-index: 999999;
+            padding: 10px;
+            background: #111;
+            color: #0f0;
+            font: 12px monospace;
+            white-space: pre-wrap;
+        `;
+
+            document.body.appendChild(box);
+        }
+
+        box.textContent += `${message}\n`;
+    }
 })();
