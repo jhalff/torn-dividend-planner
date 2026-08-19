@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         TORN Dividend Planner
 // @namespace    https://github.com/jhalff/torn-dividend-planner
-// @version      1.0.10
+// @version      1.0.11
 // @description  Build and manage TORN stock dividend combinations
 // @author       Draxeth
 // @match        https://www.torn.com/page.php*
@@ -503,11 +503,8 @@
         const stocks = getStocks();
 
         debug(
-            `DOM stocks: ${document.querySelectorAll(STOCK_SELECTOR).length}`
-        );
-
-        debug(
-            `Parsed stocks: ${stocks.length}`
+            `DOM: ${document.querySelectorAll(STOCK_SELECTOR).length} | ` +
+            `Parsed: ${stocks.length}`
         );
 
         if (!stocks.length || !manager) {
@@ -527,23 +524,6 @@
         });
 
         const portfolioValue = getPortfolioValue(stocks);
-
-        const state = [
-            portfolioValue,
-            ...selectedStocks.map(stock => stock.acronym),
-            ...stocks.map(stock => [
-                stock.acronym,
-                stock.price,
-                stock.ownedShares,
-                stock.benefit
-            ].join(':'))
-        ].join('|');
-
-        if (state === lastState) {
-            return;
-        }
-
-        lastState = state;
 
         renderPortfolio(portfolioValue);
         renderCombination();
@@ -979,7 +959,7 @@
             return;
         }
 
-        box.textContent += `${message}\n`;
+        box.textContent = message;
     }
 
     function waitForStocks() {
@@ -997,8 +977,6 @@
                 return;
             }
         }
-
-        debug(`DOM stocks found: ${stocks.length}`);
 
         sortAndRender();
 
