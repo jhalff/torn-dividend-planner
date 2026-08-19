@@ -868,18 +868,119 @@
             }
 
             @media (max-width: 800px) {
+                #torn-dividend-manager {
+                    margin-bottom: 8px;
+                    border-radius: 3px;
+                }
+
+                #torn-dividend-manager .tsm-header {
+                    padding: 9px 10px;
+                    font-size: 13px;
+                }
+
+                #torn-dividend-manager .tsm-header-title {
+                    gap: 6px;
+                }
+
+                #torn-dividend-manager .tsm-header-count {
+                    font-size: 11px;
+                }
+
                 #torn-dividend-manager .tsm-layout {
-                    grid-template-columns: 1fr;
+                    display: flex;
+                    flex-direction: column;
                 }
 
                 #torn-dividend-manager .tsm-stocks-panel {
                     border-right: 0;
                     border-bottom: 1px solid #333;
+                    width: 100%;
+                }
+
+                #torn-dividend-manager .tsm-right-panel {
+                    width: 100%;
+                }
+
+                #torn-dividend-manager .tsm-portfolio {
+                    flex-wrap: wrap;
+                    gap: 4px 8px;
+                    padding: 8px 10px;
+                }
+
+                #torn-dividend-manager .tsm-portfolio-title {
+                    font-size: 10px;
+                }
+
+                #torn-dividend-manager .tsm-portfolio-value {
+                    font-size: 11px;
+                }
+
+                #torn-dividend-manager .tsm-portfolio-remaining {
+                    margin-left: auto;
+                    font-size: 10px;
+                }
+
+                #torn-dividend-manager .tsm-section-title {
+                    padding: 8px 10px;
+                    font-size: 11px;
                 }
 
                 #torn-dividend-manager .tsm-list,
                 #torn-dividend-manager .tsm-combination-list {
+                    height: auto;
                     max-height: none;
+                    overflow-y: visible;
+                }
+
+                #torn-dividend-manager .tsm-stock {
+                    grid-template-columns: 42px minmax(0, 1fr) auto;
+                    gap: 6px;
+                    padding: 8px 10px;
+                }
+
+                #torn-dividend-manager .tsm-acronym {
+                    font-size: 11px;
+                }
+
+                #torn-dividend-manager .tsm-company {
+                    font-size: 11px;
+                }
+
+                #torn-dividend-manager .tsm-benefit {
+                    font-size: 10px;
+                }
+
+                #torn-dividend-manager .tsm-shares {
+                    font-size: 9px;
+                }
+
+                #torn-dividend-manager .tsm-price {
+                    font-size: 11px;
+                }
+
+                #torn-dividend-manager .tsm-selected-stock {
+                    padding: 8px 10px;
+                }
+
+                #torn-dividend-manager .tsm-selected-company {
+                    font-size: 11px;
+                }
+
+                #torn-dividend-manager .tsm-selected-benefit {
+                    font-size: 10px;
+                }
+
+                #torn-dividend-manager .tsm-selected-shares {
+                    font-size: 9px;
+                }
+
+                #torn-dividend-manager .tsm-selected-cost {
+                    font-size: 11px;
+                }
+
+                #torn-dividend-manager .tsm-combination-summary {
+                    padding: 8px 10px;
+                    font-size: 10px;
                 }
             }
         `;
