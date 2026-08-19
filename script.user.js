@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         TORN Dividend Planner
 // @namespace    https://github.com/jhalff/torn-dividend-planner
-// @version      1.0.16
+// @version      1.0.17
 // @description  Build and manage TORN stock dividend combinations
 // @author       Draxeth
 // @match        https://www.torn.com/page.php*
@@ -62,7 +62,6 @@
     };
 
     let manager = null;
-    let lastState = '';
     let selectedStocks = [];
 
     function findElement(root, selectors) {
@@ -204,7 +203,6 @@
         }
 
         selectedStocks.push(stock);
-        lastState = '';
 
         sortAndRender();
     }
@@ -213,8 +211,6 @@
         selectedStocks = selectedStocks.filter(
             selected => selected.acronym !== stock.acronym
         );
-
-        lastState = '';
 
         sortAndRender();
     }
@@ -226,7 +222,7 @@
         newManager.innerHTML = `
             <div class="tsm-header">
                 <div class="tsm-header-title">
-                    <strong>Dividend Planner text cahnge pls</strong>
+                    <strong>Dividend Planner</strong>
                     <span class="tsm-header-count"></span>
                 </div>
 
@@ -239,8 +235,6 @@
                     ▲
                 </button>
             </div>
-
-            <div class="tsm-debug">DEBUG: MANAGER HTML CREATED</div>
 
             <div class="tsm-content">
                 <div class="tsm-portfolio">
@@ -284,35 +278,15 @@
             || document.querySelector(STOCK_SELECTOR)?.parentElement;
 
         if (!stockMarket?.parentElement) {
-            debug('Stock market container not found yet');
             return false;
         }
 
         manager = newManager;
-        // debug('Manager created');
-        manager.querySelector('.tsm-debug').textContent = 'MANAGER CREATED - ' + Date.now();
 
         stockMarket.parentElement.insertBefore(
             manager,
             stockMarket
         );
-
-        manager.querySelector('.tsm-debug').textContent = 'INSERTED - ' + Date.now();
-
-        let debugCounter = 0;
-
-        setInterval(() => {
-            debugCounter++;
-
-            const debugElement = document.querySelector(
-                '#torn-dividend-manager .tsm-debug'
-            );
-
-            if (debugElement) {
-                debugElement.textContent =
-                    `Timer: ${debugCounter}`;
-            }
-        }, 1000);
 
         addStyles();
 
@@ -519,12 +493,6 @@
 
     function sortAndRender() {
         const stocks = getStocks();
-
-        debug(
-            `DOM: ${document.querySelectorAll(STOCK_SELECTOR).length} | ` +
-            `Parsed: ${stocks.length}`
-        );
-
         if (!stocks.length || !manager) {
             return;
         }
@@ -929,16 +897,6 @@
                 text-transform: uppercase;
             }
 
-            #torn-dividend-manager .tsm-debug {
-                display: block;
-                padding: 8px 12px;
-                background: #181818;
-                color: #8fca8f;
-                border-bottom: 1px solid #333;
-                font: 11px monospace;
-                white-space: pre-wrap;
-            }
-
             @media screen and (max-width: 800px) {
                 #torn-dividend-manager .tsm-layout {
                     display: flex;
@@ -970,23 +928,7 @@
         document.head.appendChild(style);
     }
 
-    function debug(message) {
-        const box = manager?.querySelector('.tsm-debug');
-
-        if (!box) {
-            return;
-        }
-
-        box.textContent = message;
-    }
-
     function waitForStocks() {
-        const debug = manager?.querySelector('.tsm-debug');
-
-        if (debug) {
-            debug.textContent = `WAITING | STOCKS: ${document.querySelectorAll(STOCK_SELECTOR).length}`;
-        }
-
         const stocks = document.querySelectorAll(STOCK_SELECTOR);
 
         if (!stocks.length) {
