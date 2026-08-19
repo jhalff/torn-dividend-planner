@@ -23,8 +23,6 @@
         return;
     }
 
-    debug('TORN Dividend Planner script loaded');
-
     const BENEFIT_SHARES = {
         ASS: 1_000_000,
         BAG: 3_000_000,
@@ -242,6 +240,8 @@
                 </button>
             </div>
 
+            <div class="tsm-debug"></div>
+
             <div class="tsm-content">
                 <div class="tsm-portfolio">
                     <div class="tsm-portfolio-title">
@@ -289,6 +289,7 @@
         }
 
         manager = newManager;
+        debug('Manager created');
 
         stockMarket.parentElement.insertBefore(
             manager,
@@ -500,6 +501,15 @@
 
     function sortAndRender() {
         const stocks = getStocks();
+
+        debug(
+            `DOM stocks: ${document.querySelectorAll(STOCK_SELECTOR).length}`
+        );
+
+        debug(
+            `Parsed stocks: ${stocks.length}`
+        );
+
         if (!stocks.length || !manager) {
             return;
         }
@@ -921,6 +931,16 @@
                 text-transform: uppercase;
             }
 
+            #torn-dividend-manager .tsm-debug {
+                display: block;
+                padding: 8px 12px;
+                background: #181818;
+                color: #8fca8f;
+                border-bottom: 1px solid #333;
+                font: 11px monospace;
+                white-space: pre-wrap;
+            }
+
             @media screen and (max-width: 800px) {
                 #torn-dividend-manager .tsm-layout {
                     display: flex;
@@ -952,6 +972,16 @@
         document.head.appendChild(style);
     }
 
+    function debug(message) {
+        const box = manager?.querySelector('.tsm-debug');
+
+        if (!box) {
+            return;
+        }
+
+        box.textContent += `${message}\n`;
+    }
+
     function waitForStocks() {
         const stocks = document.querySelectorAll(STOCK_SELECTOR);
         if (!stocks.length) {
@@ -967,6 +997,8 @@
                 return;
             }
         }
+
+        debug(`DOM stocks found: ${stocks.length}`);
 
         sortAndRender();
 
@@ -985,38 +1017,4 @@
     });
 
     waitForStocks();
-
-    function debug(message) {
-        let box = document.querySelector('#tsm-debug');
-
-        if (!box) {
-            box = document.createElement('div');
-
-            box.id = 'tsm-debug';
-
-            box.style.cssText = `
-                position: fixed;
-                top: 100px;
-                left: 10px;
-                right: 10px;
-                z-index: 999999;
-                padding: 10px;
-                background: #111;
-                color: #0f0;
-                font: 12px monospace;
-                white-space: pre-wrap;
-            `;
-
-            const root = document.body || document.documentElement;
-            if (!root) {
-                setTimeout(() => debug(message), 0);
-
-                return;
-            }
-
-            root.appendChild(box);
-        }
-
-        box.textContent += `${message}\n`;
-    }
 })();
