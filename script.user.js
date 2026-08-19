@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         TORN Dividend Planner
 // @namespace    https://github.com/jhalff/torn-dividend-planner
-// @version      1.0.4
+// @version      1.0.5
 // @description  Build and manage TORN stock dividend combinations
 // @author       Draxeth
 // @match        https://www.torn.com/page.php?sid=stocks
@@ -15,6 +15,7 @@
     'use strict';
 
     alert('TORN Dividend Planner loaded');
+    console.log('TORN Dividend Planner loaded');
 
     const STOCK_SELECTOR = 'ul.stock___CnywB';
     const CONTAINER_SELECTOR = '.stockMarket___IoTUH';
